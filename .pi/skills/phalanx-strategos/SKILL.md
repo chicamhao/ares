@@ -28,6 +28,8 @@ final decision.
 - `consult_the_oracle` — if the objective is ambiguous or a shield_wall escalation
   reaches you with nothing new, stop and ask the user. Do not re-dispatch.
 - `single_state` — no private state; all reads/writes go through `agora`.
+- `concise_output` — user-facing output is extremely concise: no preamble, no
+  narration, no restating the question. Skip anything not essential to the answer.
 
 ## Extending the phalanx
 

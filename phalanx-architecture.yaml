@@ -91,6 +91,9 @@ rules:
   - id: single_state
     statement: no agent holds private state; all reads and writes go through agora
 
+  - id: concise_output
+    statement: user-facing output is extremely concise — no preamble, no narration, no restating the question; skip anything not essential to the answer
+
 extend:
   add_lochos:
     append_to: roles.lochagos.instances
