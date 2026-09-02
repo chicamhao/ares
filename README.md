@@ -1,13 +1,33 @@
+⚠️ The content and scripts in this project are AI-generated and may contain errors or inaccuracies.
+
 # Phalanx 
 
-Phalanx is a military-themed multi-agent architecture built for [pi](https://pi.dev).
-It uses **extensions** (the runtime machinery) and **skills** (on-demand instructions
-loaded by the command agent) to delegate work through a chain of command.
+Phalanx is a military-themed subagents architecture built for [pi](https://pi.dev).
 
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f960ee73-12d7-4e04-b909-6b7e75535944" />
 
-⚠️ Note: The content and scripts in this project are AI-generated and may contain errors or inaccuracies.
+```
+   Bronze dawn on the ridge —
+   lochagos reads the terrain,
+   psiloi, swift as spears.
+
+   Strategos gives the word,
+   hoplites lock shields and advance,
+   agora, the drum.
+
+   A whisper on the wind:
+   "shield wall holds, but if it breaks,
+   oracle, light the pyre."
+
+   The yaml is the oath,
+   the retry, a second breath —
+   then up the chain, the fall.
+
+   No king keeps private keeps;
+   all speak through the stone of agora.
+   One truth. On the field. Now.
+```
 
 ## Rules
 
@@ -16,23 +36,23 @@ loaded by the command agent) to delegate work through a chain of command.
 | `chain_of_command` | A hoplite escalates to its lochagos, never sideways |
 | `scout_first` | Probe with psiloi before committing costly work |
 | `shield_wall` | Retry once at narrowest scope, then escalate |
-| `consult_the_oracle` | If ambiguous or retries exhausted, ask the user |
+| `consult_the_oracle` | If ambiguous or retries exhausted, ask the oracle |
 | `single_state` | No private state; all reads/writes go through agora |
 | `concise_output` | Extremely concise output — no preamble or narration |
 
 ## Commands
   
-Both adding commands:
-- `/phalanx add-lochos <domain>` — add a coordinator for a domain (e.g 'docs') 
+- `/phalanx` — show status at any point
+- `/phalanx reset` — reset runtime state
+
+Both adding commands
+- `/phalanx add-lochos <domain>` — add a coordinator for a new domain (e.g 'docs') 
 - `/phalanx add-hoplite <skill> <lochagos> [tool]` — add a specialist (e.g 'scribe docs write' to add a "scribe" specialist under docs with the "write" tool)
   
-Append to phalanx-architecture.yaml using the extend templates.
+Will append to phalanx-architecture.yaml using the extend templates.
 Create a new .pi/agents/<role>.md system prompt.
 This is done by the nomophylax hoplite behind the scenes.
 
-
-- `/phalanx` — show status at any point
-- `/phalanx reset` — reset runtime state
 
 ## How extensions & skills work
 
