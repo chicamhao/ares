@@ -1,0 +1,112 @@
+# pi.dev agent architecture — phalanx model
+# read order: roles -> rules -> extend
+schema_version: 1
+
+roles:
+  strategos:
+    tier: command
+    count: 1
+    reports_to: null
+    dispatches: [lochagos, psiloi]
+    interfaces: [chat, note]     # user-facing surfaces; both follow rule concise_output
+    responsibility: sets the objective; owns final decisions
+
+  psiloi:
+    tier: scout
+    count: variable
+    reports_to: strategos
+    writes_to: [agora]
+    responsibility: fast, cheap recon before a hoplite is committed
+
+  lochagos:
+    tier: coordinator
+    count: one per domain
+    reports_to: strategos
+    dispatches: [hoplites]
+    responsibility: breaks the objective into tasks for one domain
+    instances:
+      - research
+      - build
+      - verify
+
+  hoplites:
+    tier: specialist
+    count: one per skill
+    reports_to: lochagos         # default; the two direct_reports below override it
+    writes_to: [agora]
+    responsibility: executes exactly one task with exactly one tool
+    direct_reports:              # bypass lochagoi — cross-cutting, not tied to one domain
+      - id: kerux
+        tool: [note, code]
+        trigger: on_demand
+        responsibility: keeps the note and Scripts/ in sync in either direction, only when told to
+      - id: nomophylax
+        tool: this_file
+        tracks: architecture_note
+        trigger: on_demand
+        responsibility: applies changes to this architecture using the extend templates, then logs what changed
+
+  agora:
+    tier: infrastructure
+    accessed_by: [strategos, lochagos, hoplites, psiloi]
+    responsibility: shared memory and message bus; the only place state lives
+
+  oracle:
+    tier: escalation
+    count: 1
+    reports_to: null            # outside the chain of command — this is the user
+    consulted_by: [strategos]   # only the strategos may ask; keeps interruptions rare
+    responsibility: resolves what the system cannot — ambiguity or exhausted retries
+
+interfaces:
+  chat: {}
+  note:
+    tool: obsidian_note
+    path: <set this — e.g. "Vault/pi/strategos.md">
+    responsibility: strategos reads objectives from and writes reports to this file
+
+deployment:
+  game_dev_solo:
+    code:
+      tool: filesystem
+      scope: Scripts/
+      constraint: read and write restricted to this path only
+    data:
+      tool: unity_mcp
+      constraint: all engine, scene, and asset operations go through unity-mcp only
+
+rules:
+  - id: chain_of_command
+    statement: a hoplite escalates failure to its lochagos, never sideways to another hoplite
+
+  - id: scout_first
+    statement: psiloi probe cheaply before a hoplite is dispatched for costly work
+
+  - id: shield_wall
+    statement: on failure, retry at the narrowest scope once, then escalate up — never retry the same scope twice
+
+  - id: consult_the_oracle
+    statement: if the objective is ambiguous, or a shield_wall escalation reaches the strategos with nothing new to try, stop and ask the user — do not re-dispatch
+
+  - id: single_state
+    statement: no agent holds private state; all reads and writes go through agora
+
+extend:
+  add_lochos:
+    append_to: roles.lochagos.instances
+    template:
+      id: <domain_name>
+      reports_to: strategos
+      dispatches: [hoplites]
+
+  add_hoplite:
+    append_to: roles.hoplites   # tag with its owning lochagos
+    template:
+      id: <skill_name>
+      reports_to: <lochagos_id>
+      tool: <single_tool_reference>
+    constraint: exactly one tool per hoplite; a task needing two tools becomes two hoplites
+
+  general_principle: >
+    every new role declares exactly one reports_to and inherits its tier's
+    rules above. adding a new tier requires updating the rules section too.
