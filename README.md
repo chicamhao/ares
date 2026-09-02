@@ -1,42 +1,80 @@
-# Phalanx — how to use it day to day
+# Phalanx 
 
-You talk to Pi. Pi dispatches phalanx agents to do the work.
+Phalanx is a military-themed multi-agent architecture built on [pi](https://pi.dev).
+It uses **extensions** (the runtime machinery) and **skills** (on-demand instructions
+loaded by the command agent) to delegate work through a chain of command.
 
-## What you say to start work
 
-| You want to... | Say to Pi |
-|---------------|-----------|
-| Fix a bug | `"investigate bug: player health doesn't decrease when hit"` |
-| Add a feature | `"implement double-jump in the player controller"` |
-| Find code | `"find all references to UnityEngine.Network"` |
-| Understand how something works | `"trace how damage flows from enemy attack to health update"` |
-| Verify something works | `"verify the double-jump fix — check edge cases"` |
-| Sync results to your note | `"sync the bug report to my note"` |
-| Extend the team | `"/phalanx add-lochos docs"` or `"/phalanx add-hoplite scribe docs write"` |
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f960ee73-12d7-4e04-b909-6b7e75535944" />
 
-Pi handles the multi-agent pipeline: scouts the codebase first, researches,
-builds, verifies, and reports back — all through isolated phalanx agents.
+## Rules
 
-## What Pi does behind the scenes
-
-| Your prompt triggers | Agents involved |
-|---------------------|----------------|
-| Bug investigation | psiloi (find code) → lochagos-research (trace flow) → lochagos-build (fix) → lochagos-verify (confirm) → hoplite-kerux (report to note) |
-| Feature implementation | psiloi (find files) → lochagos-build (write code) → lochagos-verify (check correctness) → hoplite-kerux (report) |
-| Codebase search | psiloi (grep/find) or lochagos-research (deeper investigation) |
-| Architecture change | hoplite-nomophylax (edits `phalanx-architecture.yaml` via `/phalanx` commands) |
+| Rule | Meaning |
+|------|---------|
+| `chain_of_command` | A hoplite escalates to its lochagos, never sideways |
+| `scout_first` | Probe with psiloi before committing costly work |
+| `shield_wall` | Retry once at narrowest scope, then escalate |
+| `consult_the_oracle` | If ambiguous or retries exhausted, ask the user |
+| `single_state` | No private state; all reads/writes go through agora |
+| `concise_output` | Extremely concise output — no preamble or narration |
 
 ## Commands
 
-- `/phalanx` — show status
-- `/phalanx add-lochos <domain>` — add a coordinator for a new domain
+- `/phalanx` — show status at any point
+- `/phalanx add-lochos <domain>` — add a coordinator (research/build/verify) for a new domain
 - `/phalanx add-hoplite <skill> <lochagos> [tool]` — add a specialist
 - `/phalanx reset` — reset runtime state
 
-## Rules Pi follows
+## How extensions & skills work
 
-1. **Scout first** — always probes cheaply before committing expensive work.
-2. **Chain of command** — agents report up, never sideways.
-3. **Shield wall** — retries once, then asks you.
-4. **Single state** — everything stored in shared memory (agora), never lost between steps.
-5. **Concise output** — no preamble, no narration, just what you need.
+The **extension** provides the infrastructure — the `agora`, `phalanx_dispatch`,
+and `phalanx_status` tools, plus `/phalanx` commands.
+
+**Skills** are not loaded automatically. They are referenced by name in the
+strategos prompt and read on demand when the task matches their description.
+Each skill file teaches the agent how to handle a specific job:
+
+| Skill | When to use |
+|-------|------------|
+| `phalanx-strategos` | Coordinating a multi-step task across multiple domains |
+| `phalanx-psiloi` | Fast codebase reconnaissance before committing a specialist |
+| `phalanx-lochagos` | Substantial multi-step work in one domain |
+| `phalanx-hoplites` | Small, well-scoped task needing exactly one tool |
+| `phalanx-agora` | Sharing state across dispatches via the memory bus |
+| `phalanx-oracle` | Escalating to the user when stuck or ambiguous |
+
+The **strategos** (the main session) loads these skill files as needed and
+applies their instructions. You never install or enable skills — they are just
+markdown files that describe how to use the extension's tools.
+
+
+## Extending the phalanx
+
+Use the `/phalanx` command to add new roles to the architecture.
+
+```
+/phalanx add-lochos docs          # Add a "docs" coordinator
+/phalanx add-hoplite scribe docs write   # Add a "scribe" specialist under docs with the "write" tool
+```
+
+Both commands:
+1. Append to `phalanx-architecture.yaml` using the `extend` templates.
+2. Create a new `.pi/agents/<role>.md` system prompt.
+
+This is done by the `nomophylax` hoplite behind the scenes.
+
+## File layout
+
+```
+ares/
+├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
+├── .pi/
+│   ├── agents/                      # Subagent system prompts
+│   ├── extensions/phalanx/          # Extension source code (TypeScript)
+│   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
+│   └── phalanx/agora.json           # Runtime shared memory (gitignored)
+└── Scripts/                         # Your game/project code
+```
+
+---
+
