@@ -2,32 +2,10 @@
 
 # Phalanx 
 
-Phalanx is a military-themed subagents architecture built for [pi](https://pi.dev).
+The military-themed subagent architecture built for [Pi](https://pi.dev).
 
+<img width="1402" height="1122" alt="image" src="https://github.com/user-attachments/assets/967b7081-c0ce-4fc2-8b31-a9d36276d807" />
 
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f960ee73-12d7-4e04-b909-6b7e75535944" />
-
-```
-   Bronze dawn on the ridge —
-   lochagos reads the terrain,
-   psiloi, swift as spears.
-
-   Strategos gives the word,
-   hoplites lock shields and advance,
-   agora, the drum.
-
-   A whisper on the wind:
-   "shield wall holds, but if it breaks,
-   oracle, light the pyre."
-
-   The yaml is the oath,
-   the retry, a second breath —
-   then up the chain, the fall.
-
-   No king keeps private keeps;
-   all speak through the stone of agora.
-   One truth. On the field. Now.
-```
 
 ## Rules
 
