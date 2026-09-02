@@ -1,6 +1,6 @@
 # Phalanx 
 
-Phalanx is a military-themed multi-agent architecture built on [pi](https://pi.dev).
+Phalanx is a military-themed multi-agent architecture built for [pi](https://pi.dev).
 It uses **extensions** (the runtime machinery) and **skills** (on-demand instructions
 loaded by the command agent) to delegate work through a chain of command.
 
