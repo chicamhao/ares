@@ -32,7 +32,7 @@ This is done by the nomophylax hoplite behind the scenes.
 
 
 - `/phalanx` — show status at any point
-- `/phalanx reset` — reset runtime state
+- `/phalanx reset` — reset agoda runtime state
 
 ## How extensions & skills work
 
@@ -55,12 +55,6 @@ Each skill file teaches the agent how to handle a specific job:
 The **strategos** (the main session) loads these skill files as needed and
 applies their instructions. You never install or enable skills — they are just
 markdown files that describe how to use the extension's tools.
-
-Both commands:
-1. Append to `phalanx-architecture.yaml` using the `extend` templates.
-2. Create a new `.pi/agents/<role>.md` system prompt.
-
-This is done by the `nomophylax` hoplite behind the scenes.
 
 ## File layout
 
