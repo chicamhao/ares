@@ -1,3 +1,5 @@
+⚠️ Note: The content and scripts in this project are AI-generated and may contain errors or inaccuracies. Please review and use them at your own discretion.
+
 # Phalanx 
 
 Phalanx is a military-themed multi-agent architecture built for [pi](https://pi.dev).
