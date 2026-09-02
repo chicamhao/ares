@@ -14,6 +14,19 @@ skills. Read order mirrors the file: **roles → rules → extend**.
 - **Commands** — `/phalanx`, `/phalanx add-lochos <domain>`,
   `/phalanx add-hoplite <skill> <lochagos> [tool]`, `/phalanx reset`.
 
+## Strategos prompt (`.pi/agent/AGENTS.md`)
+
+The main session (strategos) gets its role declaration from `.pi/agent/AGENTS.md` — a
+per-project override of the global `~/.pi/agent/AGENTS.md`. This file tells Pi
+it is the **strategos**, lists the six phalanx rules, and names every dispatchable
+agent in the project.
+
+Without this file, Pi has no built-in knowledge of the phalanx role — it defaults
+back to "expert coding assistant" and won't consistently dispatch.
+
+**Both** the global AND project-level file should be kept in sync. The global one
+covers every Pi session; the project one adds the specific roster for `ares`.
+
 ## Role agents (`.pi/agents/`)
 
 | Agent | Tier | Tools | Purpose |
@@ -47,6 +60,7 @@ templates) and create the matching `.pi/agents/*.md` file.
 
 ```
 .pi/
+├── agent/AGENTS.md                 # 🆕 Strategos system prompt (overrides global)
 ├── extensions/phalanx/
 │   ├── index.ts        entry — tools, commands, rules injection
 │   ├── architecture.ts YAML parser + model + extend helpers

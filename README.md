@@ -68,6 +68,7 @@ This is done by the `nomophylax` hoplite behind the scenes.
 ares/
 ├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
 ├── .pi/
+│   ├── agent/AGENTS.md              # 🆕 Strategos system prompt (overrides global)
 │   ├── agents/                      # Subagent system prompts
 │   ├── extensions/phalanx/          # Extension source code (TypeScript)
 │   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
