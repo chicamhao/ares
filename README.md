@@ -1,5 +1,3 @@
-⚠️ Note: The content and scripts in this project are AI-generated and may contain errors or inaccuracies. Please review and use them at your own discretion.
-
 # Phalanx 
 
 Phalanx is a military-themed multi-agent architecture built for [pi](https://pi.dev).
@@ -8,6 +6,8 @@ loaded by the command agent) to delegate work through a chain of command.
 
 
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f960ee73-12d7-4e04-b909-6b7e75535944" />
+
+⚠️ Note: The content and scripts in this project are AI-generated and may contain errors or inaccuracies.
 
 ## Rules
 
@@ -21,10 +21,17 @@ loaded by the command agent) to delegate work through a chain of command.
 | `concise_output` | Extremely concise output — no preamble or narration |
 
 ## Commands
+  
+Both adding commands:
+- `/phalanx add-lochos <domain>` — add a coordinator for a domain (e.g 'docs') 
+- `/phalanx add-hoplite <skill> <lochagos> [tool]` — add a specialist (e.g 'scribe docs write' to add a "scribe" specialist under docs with the "write" tool)
+  
+Append to phalanx-architecture.yaml using the extend templates.
+Create a new .pi/agents/<role>.md system prompt.
+This is done by the nomophylax hoplite behind the scenes.
+
 
 - `/phalanx` — show status at any point
-- `/phalanx add-lochos <domain>` — add a coordinator (research/build/verify) for a new domain
-- `/phalanx add-hoplite <skill> <lochagos> [tool]` — add a specialist
 - `/phalanx reset` — reset runtime state
 
 ## How extensions & skills work
@@ -48,16 +55,6 @@ Each skill file teaches the agent how to handle a specific job:
 The **strategos** (the main session) loads these skill files as needed and
 applies their instructions. You never install or enable skills — they are just
 markdown files that describe how to use the extension's tools.
-
-
-## Extending the phalanx
-
-Use the `/phalanx` command to add new roles to the architecture.
-
-```
-/phalanx add-lochos docs          # Add a "docs" coordinator
-/phalanx add-hoplite scribe docs write   # Add a "scribe" specialist under docs with the "write" tool
-```
 
 Both commands:
 1. Append to `phalanx-architecture.yaml` using the `extend` templates.
