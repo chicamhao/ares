@@ -43,7 +43,7 @@ Phalanx is a military-themed subagents architecture built for [pi](https://pi.de
 ## Commands
   
 - `/phalanx` — show status at any point
-- `/phalanx reset` — reset runtime state
+- `/phalanx reset` — reset agoda runtime state
 
 Both adding commands
 - `/phalanx add-lochos <domain>` — add a coordinator for a new domain (e.g 'docs') 
@@ -52,7 +52,6 @@ Both adding commands
 Will append to phalanx-architecture.yaml using the extend templates.
 Create a new .pi/agents/<role>.md system prompt.
 This is done by the nomophylax hoplite behind the scenes.
-
 
 ## How extensions & skills work
 
@@ -76,12 +75,6 @@ The **strategos** (the main session) loads these skill files as needed and
 applies their instructions. You never install or enable skills — they are just
 markdown files that describe how to use the extension's tools.
 
-Both commands:
-1. Append to `phalanx-architecture.yaml` using the `extend` templates.
-2. Create a new `.pi/agents/<role>.md` system prompt.
-
-This is done by the `nomophylax` hoplite behind the scenes.
-
 ## File layout
 
 ```
@@ -95,6 +88,3 @@ ares/
 │   └── phalanx/agora.json           # Runtime shared memory (gitignored)
 └── Scripts/                         # Your game/project code
 ```
-
----
-
