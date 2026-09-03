@@ -20,8 +20,8 @@ The military-themed subagent architecture built for [Pi](https://pi.dev).
 
 ## Commands
 
-- `/phalanx` — show status at any point
-- `/phalanx-new` — reset agora runtime state
+- `/phalanx` — show lochagos domains, agora key/log count, cumulative token cost & usage, and session elapsed time
+- `/phalanx-new` — reset agora runtime state (keys, messages, log, attempts)
 
 ## How extensions & skills work
 
@@ -52,7 +52,8 @@ ares/
 ├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
 ├── .pi/
 │   ├── agent/AGENTS.md              # 🆕 Strategos system prompt (overrides global)
-│   ├── agents/                      # Subagent system prompts
+│   ├── agents/                      # Subagent system prompts (psiloi, lochagos-*) 
+│   (no direct-report hoplites; add roles by editing phalanx-architecture.yaml)
 │   ├── extensions/phalanx/          # Extension source code (TypeScript)
 │   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
 │   └── phalanx/agora.json           # Runtime shared memory (gitignored)
