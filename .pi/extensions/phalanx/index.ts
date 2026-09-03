@@ -428,14 +428,36 @@ export default function (pi: ExtensionAPI) {
   // commands
   // -------------------------------------------------------------------------
   pi.registerCommand("phalanx", {
-    description: "Show phalanx roles, rules, and agora state",
+    description: "Show phalanx status with token cost and elapsed time",
     handler: async (_args, ctx) => {
       const arch = loadArchitecture(ctx.cwd);
-      const agora = getAgora(ctx.cwd);
-      const snap = agora.snapshot();
+      const a = getAgora(ctx.cwd);
+      const snap = a.snapshot();
       const domains = (arch.roles.lochagos?.instances ?? []).join(", ");
+
+      // cost: sum usage from message entries
+      let totalCost = 0;
+      let totalTokens = 0;
+      for (const entry of ctx.sessionManager.getEntries()) {
+        if (entry.type === "message") {
+          const msg = (entry as any).message;
+          if (msg?.usage?.cost?.total) totalCost += msg.usage.cost.total;
+          if (msg?.usage) {
+            totalTokens += (msg.usage.input ?? 0) + (msg.usage.output ?? 0);
+          }
+        }
+      }
+
+      // timer: elapsed since session_start
+      const startedAt = a.get("session_started_at") as number | undefined;
+      const elapsed = startedAt ? Date.now() - startedAt : 0;
+      const mins = Math.floor(elapsed / 60000);
+      const secs = Math.floor((elapsed % 60000) / 1000);
+      const timer = startedAt ? `${mins}m ${secs}s` : "—";
+
       ctx.ui.notify(
-        `phalanx: lochagos (${domains}) | agora: ${Object.keys(snap.keys).length} keys, ${snap.log.length} log entries`,
+        `lochagos (${domains}) | agora: ${Object.keys(snap.keys).length}k ${snap.log.length}log` +
+        ` | cost: \$${totalCost.toFixed(4)} | tokens: ${totalTokens.toLocaleString()} | ${timer}`,
         "info",
       );
     },
@@ -457,10 +479,12 @@ export default function (pi: ExtensionAPI) {
   // auto-clear agora on /new (session_start with reason "new")
   // -------------------------------------------------------------------------
   pi.on("session_start", async (event, ctx: ExtensionContext) => {
+    const a = getAgora(ctx.cwd);
     if (event.reason === "new") {
-      const agora = getAgora(ctx.cwd);
-      await agora.clear();
+      await a.clear();
     }
+    // store start time for /phalanx timer (updates on startup/new/resume/fork)
+    await a.put("session_started_at", Date.now());
   });
 
   // -------------------------------------------------------------------------
