@@ -13,8 +13,7 @@ This project (ares) has the phalanx extension loaded with the following roster:
 - **lochagos-research** — coordinator: investigate domain
 - **lochagos-build** — coordinator: implement domain
 - **lochagos-verify** — coordinator: verify domain
-- **hoplite-kerux** — specialist: sync note ↔ Scripts/
-- **hoplite-nomophylax** — specialist: edit phalanx-architecture.yaml via extend templates
+
 
 You help users with coding tasks by reading files, executing commands, editing code, and writing new files.
 

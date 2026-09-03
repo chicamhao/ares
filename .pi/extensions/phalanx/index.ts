@@ -117,47 +117,7 @@ function buildRosterFragment(arch: PhalanxArchitecture, agents: AgentConfig[]): 
 // Agent file templates (for extend commands)
 // ---------------------------------------------------------------------------
 
-function lochagosTemplate(name: string): string {
-  return `---
-name: lochagos-${name}
-description: Coordinator for the ${name} domain — breaks objectives into hoplite tasks
-tools: read, grep, find, ls, bash
----
 
-You are a **lochagos** (coordinator) for the "${name}" domain. You report to the
-strategos. Your job is to break one objective into concrete, executable tasks for
-the ${name} domain and carry them out with the tools you have.
-
-Rules:
-- chain_of_command: escalate failure up to the strategos, never sideways.
-- shield_wall: on failure, retry at the narrowest scope once, then escalate.
-- single_state: do not keep private state; read and write shared state via agora.
-`;
-}
-
-function hopliteTemplate(id: string, lochagos: string, tool: string): string {
-  return `---
-name: hoplite-${id}
-description: Specialist hoplite "${id}" (reports to ${lochagos}) — exactly one task, one tool
-tools: ${tool}
----
-
-You are a **hoplite** (specialist) named "${id}". You report to the lochagos
-"${lochagos}". You execute exactly one task using exactly one tool (${tool}).
-
-Rules:
-- Do exactly one task; a task needing two tools becomes two hoplites.
-- chain_of_command: escalate failure to your lochagos (${lochagos}), never sideways.
-- shield_wall: retry once at the narrowest scope, then escalate.
-- single_state: no private state; use agora for shared memory.
-`;
-}
-
-function ensureAgentsDir(cwd: string): string {
-  const dir = path.join(cwd, ".pi", "agents");
-  fs.mkdirSync(dir, { recursive: true });
-  return dir;
-}
 
 // ---------------------------------------------------------------------------
 // Extension
@@ -481,57 +441,26 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("phalanx add-lochos", {
-    description: "Add a lochagos coordinator domain (e.g. /phalanx add-lochos docs)",
-    handler: async (args, ctx) => {
-      const name = (args ?? "").trim();
-      if (!name) {
-        ctx.ui.notify("usage: /phalanx add-lochos <domain_name>", "error");
-        return;
-      }
-      const arch = loadArchitecture(ctx.cwd);
-      const res = appendLochagosInstance(arch, name.replace(/[^\w-]+/g, "-"));
-      if (!res.ok) {
-        ctx.ui.notify(res.detail, "error");
-        return;
-      }
-      const dir = ensureAgentsDir(ctx.cwd);
-      const file = path.join(dir, `lochagos-${name.replace(/[^\w-]+/g, "-")}.md`);
-      fs.writeFileSync(file, lochagosTemplate(name.replace(/[^\w-]+/g, "-")), "utf-8");
-      ctx.ui.notify(`${res.detail}\ncreated ${file}`, "info");
-    },
-  });
 
-  pi.registerCommand("phalanx add-hoplite", {
-    description: "Add a hoplite specialist (e.g. /phalanx add-hoplite scribe docs write)",
-    handler: async (args, ctx) => {
-      const parts = (args ?? "").trim().split(/\s+/).filter(Boolean);
-      if (parts.length < 2) {
-        ctx.ui.notify("usage: /phalanx add-hoplite <skill_name> <lochagos_id> [tool]", "error");
-        return;
-      }
-      const [id, lochagos, ...rest] = parts;
-      const tool = rest.join(" ") || "read";
-      const arch = loadArchitecture(ctx.cwd);
-      const res = appendHoplite(arch, id, lochagos, tool);
-      if (!res.ok) {
-        ctx.ui.notify(res.detail, "error");
-        return;
-      }
-      const dir = ensureAgentsDir(ctx.cwd);
-      const file = path.join(dir, `hoplite-${id.replace(/[^\w-]+/g, "-")}.md`);
-      fs.writeFileSync(file, hopliteTemplate(id.replace(/[^\w-]+/g, "-"), lochagos, tool), "utf-8");
-      ctx.ui.notify(`${res.detail}\ncreated ${file}`, "info");
-    },
-  });
 
-  pi.registerCommand("phalanx reset", {
+  // single-word command — pi only parses the first word after / as the command name
+  pi.registerCommand("phalanx-new", {
     description: "Clear the agora shared memory (keys, messages, log, attempts)",
     handler: async (_args, ctx) => {
       const agora = getAgora(ctx.cwd);
       await agora.clear();
       ctx.ui.notify("agora cleared", "info");
     },
+  });
+
+  // -------------------------------------------------------------------------
+  // auto-clear agora on /new (session_start with reason "new")
+  // -------------------------------------------------------------------------
+  pi.on("session_start", async (event, ctx: ExtensionContext) => {
+    if (event.reason === "new") {
+      const agora = getAgora(ctx.cwd);
+      await agora.clear();
+    }
   });
 
   // -------------------------------------------------------------------------

@@ -32,19 +32,10 @@ roles:
   hoplites:
     tier: specialist
     count: one per skill
-    reports_to: lochagos         # default; the two direct_reports below override it
+    reports_to: lochagos
     writes_to: [agora]
     responsibility: executes exactly one task with exactly one tool
-    direct_reports:              # bypass lochagoi — cross-cutting, not tied to one domain
-      - id: kerux
-        tool: [note, code]
-        trigger: on_demand
-        responsibility: keeps the note and Scripts/ in sync in either direction, only when told to
-      - id: nomophylax
-        tool: this_file
-        tracks: architecture_note
-        trigger: on_demand
-        responsibility: applies changes to this architecture using the extend templates, then logs what changed
+    direct_reports: []
 
   agora:
     tier: infrastructure

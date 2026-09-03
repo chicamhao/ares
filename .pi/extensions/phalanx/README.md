@@ -11,8 +11,7 @@ skills. Read order mirrors the file: **roles → rules → extend**.
   restricted tools. Enforces *chain_of_command*, *shield_wall* (retry once, then
   escalate), and *consult_the_oracle* (asks you when retries are exhausted).
 - **`phalanx_status`** — reports roles, rules, loaded agents, and agora state.
-- **Commands** — `/phalanx`, `/phalanx add-lochos <domain>`,
-  `/phalanx add-hoplite <skill> <lochagos> [tool]`, `/phalanx reset`.
+- **Commands** — `/phalanx`, `/phalanx-new`.
 
 ## Strategos prompt (`.pi/agent/AGENTS.md`)
 
@@ -35,26 +34,20 @@ covers every Pi session; the project one adds the specific roster for `ares`.
 | `lochagos-research` | coordinator | read, grep, find, ls, bash | investigate a domain |
 | `lochagos-build` | coordinator | read, edit, write, bash | implement a domain |
 | `lochagos-verify` | coordinator | read, grep, bash | verify a domain |
-| `hoplite-kerux` | specialist (direct) | read, edit, write | keep note ↔ `Scripts/` in sync |
-| `hoplite-nomophylax` | specialist (direct) | read, edit | edit `phalanx-architecture.yaml` via extend templates |
+
 
 The main session **is** the strategos. It dispatches down and owns final decisions.
 
 ## Chain of command
 
-- strategos → `psiloi`, `lochagos-*`, and the two direct-report hoplites.
+- strategos → `psiloi`, `lochagos-*`, and direct-report hoplites.
 - lochagos → hoplites (one task, one tool each).
 - psiloi / hoplites dispatch nothing; they escalate up.
 
 ## Extending the phalanx
 
-```
-/phalanx add-lochos docs                        # new coordinator domain
-/phalanx add-hoplite scribe docs write          # new specialist under docs
-```
-
-Both commands append to `phalanx-architecture.yaml` (using the `extend`
-templates) and create the matching `.pi/agents/*.md` file.
+Edit `phalanx-architecture.yaml` and update the strategos prompt and
+README to reflect any added roles.
 
 ## Layout
 

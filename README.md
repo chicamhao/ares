@@ -19,17 +19,9 @@ The military-themed subagent architecture built for [Pi](https://pi.dev).
 | `concise_output` | Extremely concise output — no preamble or narration |
 
 ## Commands
-  
-- `/phalanx` — show status at any point
-- `/phalanx reset` — reset agoda runtime state
 
-Both adding commands
-- `/phalanx add-lochos <domain>` — add a coordinator for a new domain (e.g 'docs') 
-- `/phalanx add-hoplite <skill> <lochagos> [tool]` — add a specialist (e.g 'scribe docs write' to add a "scribe" specialist under docs with the "write" tool)
-  
-Will append to phalanx-architecture.yaml using the extend templates.
-Create a new .pi/agents/<role>.md system prompt.
-This is done by the nomophylax hoplite behind the scenes.
+- `/phalanx` — show status at any point
+- `/phalanx-new` — reset agora runtime state
 
 ## How extensions & skills work
 
