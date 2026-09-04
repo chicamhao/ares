@@ -47,11 +47,10 @@ markdown files that describe how to use the extension's tools.
 ## File layout
 
 ```
-ares/
 ├── CONVENTIONS.yaml                 # Code style, git, file conventions (loaded by lochagos-work/build)
 ├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
 ├── .pi/
-│   ├── agent/AGENTS.md              # 🆕 Strategos system prompt (overrides global)
+│   ├── agent/AGENTS.md              # Strategos system prompt (overrides global)
 │   ├── agents/                      # Subagent system prompts (psiloi, lochagos-*)
 │   ├── extensions/phalanx/          # Extension source code (TypeScript)
 │   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
