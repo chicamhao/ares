@@ -112,6 +112,19 @@ function buildRulesFragment(arch: PhalanxArchitecture): string {
   return lines.join("\n");
 }
 
+function sumUsage(ctx: ExtensionContext): { cost: number; tokens: number } {
+  let cost = 0;
+  let tokens = 0;
+  for (const entry of ctx.sessionManager.getEntries()) {
+    if (entry.type === "message") {
+      const msg = (entry as any).message;
+      if (msg?.usage?.cost?.total) cost += msg.usage.cost.total;
+      if (msg?.usage) tokens += (msg.usage.input ?? 0) + (msg.usage.output ?? 0);
+    }
+  }
+  return { cost, tokens };
+}
+
 function buildRosterFragment(arch: PhalanxArchitecture, agents: AgentConfig[]): string {
   const lines = ["# Phalanx roster (dispatchable roles)", ""];
   lines.push(
@@ -461,25 +474,18 @@ export default function (pi: ExtensionAPI) {
   // commands
   // -------------------------------------------------------------------------
   pi.registerCommand("phalanx", {
-    description: "Show phalanx status with token cost and elapsed time",
+    description: "Show phalanx status with token cost and elapsed time (since last start)",
     handler: async (_args, ctx) => {
-      const arch = loadArchitecture(ctx.cwd);
       const a = getAgora(ctx.cwd);
       const snap = a.snapshot();
-      const domains = (arch.roles.lochagos?.instances ?? []).join(", ");
 
-      // cost: sum usage from message entries
-      let totalCost = 0;
-      let totalTokens = 0;
-      for (const entry of ctx.sessionManager.getEntries()) {
-        if (entry.type === "message") {
-          const msg = (entry as any).message;
-          if (msg?.usage?.cost?.total) totalCost += msg.usage.cost.total;
-          if (msg?.usage) {
-            totalTokens += (msg.usage.input ?? 0) + (msg.usage.output ?? 0);
-          }
-        }
-      }
+      // cost/tokens since last session_start (getEntries() is the whole append-only
+      // file, so subtract the baseline snapshotted at startup/new/resume/fork)
+      const { cost, tokens } = sumUsage(ctx);
+      const costBaseline = (a.get("cost_baseline") as number | undefined) ?? 0;
+      const tokensBaseline = (a.get("tokens_baseline") as number | undefined) ?? 0;
+      const totalCost = Math.max(0, cost - costBaseline);
+      const totalTokens = Math.max(0, tokens - tokensBaseline);
 
       // timer: elapsed since session_start
       const startedAt = a.get("session_started_at") as number | undefined;
@@ -489,8 +495,8 @@ export default function (pi: ExtensionAPI) {
       const timer = startedAt ? `${mins}m ${secs}s` : "—";
 
       ctx.ui.notify(
-        `lochagos (${domains}) | agora: ${Object.keys(snap.keys).length}k ${snap.log.length}log` +
-        ` | cost: \$${totalCost.toFixed(4)} | tokens: ${totalTokens.toLocaleString()} | ${timer}`,
+        `agora: ${Object.keys(snap.keys).length}k ${snap.log.length}log` +
+        ` | \$${totalCost.toFixed(4)} | ${totalTokens.toLocaleString()}tok | ${timer}`,
         "info",
       );
     },
@@ -516,8 +522,12 @@ export default function (pi: ExtensionAPI) {
     if (event.reason === "new") {
       await a.clear();
     }
-    // store start time for /phalanx timer (updates on startup/new/resume/fork)
+    // store start time + cost/token baseline for /phalanx (updates on startup/new/resume/fork)
+    // so "cumulative" means since this start, not since the session file began
     await a.put("session_started_at", Date.now());
+    const { cost, tokens } = sumUsage(ctx);
+    await a.put("cost_baseline", cost);
+    await a.put("tokens_baseline", tokens);
   });
 
   // -------------------------------------------------------------------------

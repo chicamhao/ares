@@ -20,7 +20,7 @@ The military-themed subagent architecture built for [Pi](https://pi.dev).
 
 ## Commands
 
-- `/phalanx` — show lochagos domains, agora key/log count, cumulative token cost & usage, and session elapsed time
+- `/phalanx` — one-line status: agora key/log count, token cost & usage since the last start, and elapsed time
 - `/phalanx-new` — reset agora runtime state (keys, messages, log, attempts)
 
 ## How extensions & skills work
