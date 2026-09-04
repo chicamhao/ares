@@ -46,10 +46,10 @@ markdown files that describe how to use the extension's tools.
 
 ## Use in your own project
 
+0. (Optional) **update `phalanx-architecture.yaml`** — to define new custom roles, rules, deployment scope
 1. **Copy `.pi/`** into your project root
 2. **Create `CONVENTIONS.yaml`** in your project root — code style (see this repo's copy as a template)
-3. (Optional) **update `phalanx-architecture.yaml`** — to define new custom roles, rules, deployment scope
-4. **Start a Pi session** — the strategos loads automatically and the phalanx handles the rest
+3. **Start a Pi session** — the strategos loads automatically and the phalanx handles the rest
 
 ## File layout
 
