@@ -28,8 +28,9 @@ The military-themed subagent architecture built for [Pi](https://pi.dev).
 
 ## Commands
 
-- `/phalanx` — one-line status: agora key/log count, token cost & usage since the last start, and elapsed time
-- `/phalanx-new` — reset agora runtime state (keys, messages, log, attempts)
+- `/phalanx-muster` — one-line status: agora key/log count, token cost & usage since the last start, and elapsed time
+- `/phalanx-reform` — reset agora runtime state (keys, messages, log, attempts)
+- `/phalanx-arrange` — read `phalanx-architecture.yaml` and auto-create missing agent (`.pi/agents/*.md`) files
 
 ## How extensions & skills work
 
