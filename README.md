@@ -48,6 +48,7 @@ markdown files that describe how to use the extension's tools.
 
 ```
 ares/
+├── CONVENTIONS.yaml                 # Code style, git, file conventions (loaded by lochagos-work/build)
 ├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
 ├── .pi/
 │   ├── agent/AGENTS.md              # 🆕 Strategos system prompt (overrides global)

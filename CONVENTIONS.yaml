@@ -1,0 +1,34 @@
+# Phalanx project conventions
+# Agents with edit/write tools follow this as the project style guide.
+
+code:
+  language: TypeScript / Node.js
+  style:
+    indentation: 2 spaces
+    quotes: double
+    semicolons: true
+    trailing_commas: es5
+    line_length: 100
+  naming:
+    files: kebab-case
+    functions: camelCase
+    classes: PascalCase
+    constants: UPPER_SNAKE_CASE
+  imports:
+    order: [builtins, external, internal]
+    groups_separated: true
+
+git:
+  branch_naming: feat/description or fix/description
+  commits: conventional-commits
+  commit_format: "type(scope): description"
+  types: [feat, fix, chore, refactor, docs, test]
+
+files:
+  organize_by: feature, not type
+  one_component_per_file: true
+  test_colocation: next to source as *.test.ts
+
+documentation:
+  readme: required per package
+  inline_doc: jsdoc for exports, simple comments for internal clarity
