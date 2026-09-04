@@ -581,6 +581,7 @@ export default function (pi: ExtensionAPI) {
 
       const created: string[] = [];
       const existed: string[] = [];
+      const removed: string[] = [];
 
       const check = (filename: string, template: string) => {
         const filePath = path.join(agentsDir, filename);
@@ -595,14 +596,28 @@ export default function (pi: ExtensionAPI) {
       check("psiloi.md", PSILOI_AGENT_TEMPLATE);
 
       const instances = arch.roles.lochagos?.instances ?? [];
+      const instSet = new Set(instances);
       for (const inst of instances) {
         check(`lochagos-${inst}.md`, generateLochagosAgentFile(inst));
       }
 
-      let msg = created.length
-        ? `arranged: created ${created.join(", ")}`
-        : "arranged: nothing to create";
-      if (existed.length) msg += ` (existing: ${existed.join(", ")})`;
+      // clean up agent files for instances removed from the YAML
+      if (fs.existsSync(agentsDir)) {
+        for (const entry of fs.readdirSync(agentsDir, { withFileTypes: true })) {
+          if (!entry.isFile() || !entry.name.startsWith("lochagos-") || !entry.name.endsWith(".md")) continue;
+          const domain = entry.name.slice("lochagos-".length, -".md".length);
+          if (!instSet.has(domain)) {
+            fs.unlinkSync(path.join(agentsDir, entry.name));
+            removed.push(entry.name);
+          }
+        }
+      }
+
+      const parts: string[] = [];
+      if (created.length) parts.push(`created ${created.join(", ")}`);
+      if (existed.length) parts.push(`existing ${existed.join(", ")}`);
+      if (removed.length) parts.push(`removed ${removed.join(", ")}`);
+      const msg = parts.length ? `arranged: ${parts.join("; ")}` : "arranged: nothing to do";
       ctx.ui.notify(msg, "info");
     },
   });
