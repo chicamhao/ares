@@ -1,5 +1,5 @@
 # pi.dev agent architecture — phalanx model
-# read order: roles -> rules -> extend
+# read order: roles -> rules -> models -> extend
 schema_version: 1
 
 roles:
@@ -9,37 +9,29 @@ roles:
     reports_to: null
     dispatches: [lochagos, psiloi]
     interfaces: [chat, note]     # user-facing surfaces; both follow rule concise_output
-    responsibility: sets the objective; owns final decisions
+    responsibility: sets the objective and owns final decisions; acts directly on small or single-file work, and dispatches a lochagos only for large, multi-file, risky, or genuinely parallel work
 
   psiloi:
     tier: scout
     count: variable
     reports_to: strategos
     writes_to: [agora]
-    responsibility: fast, cheap recon before a hoplite is committed
+    responsibility: fast, cheap recon when the target location is unknown
 
   lochagos:
     tier: coordinator
     count: one per domain
     reports_to: strategos
-    dispatches: [hoplites]
-    responsibility: breaks the objective into tasks for one domain
+    responsibility: breaks the objective into tasks for one domain and carries them out directly
     instances:
+      - work        # generalist: investigate + implement + verify in one pass — default for small/medium tasks
       - research
       - build
       - verify
 
-  hoplites:
-    tier: specialist
-    count: one per skill
-    reports_to: lochagos
-    writes_to: [agora]
-    responsibility: executes exactly one task with exactly one tool
-    direct_reports: []
-
   agora:
     tier: infrastructure
-    accessed_by: [strategos, lochagos, hoplites, psiloi]
+    accessed_by: [strategos, lochagos, psiloi]
     responsibility: shared memory and message bus; the only place state lives
 
   oracle:
@@ -68,39 +60,28 @@ deployment:
 
 rules:
   - id: chain_of_command
-    statement: a hoplite escalates failure to its lochagos, never sideways to another hoplite
+    statement: a lochagos escalates failure to the strategos, never sideways to another lochagos
 
   - id: scout_first
-    statement: psiloi probe cheaply before a hoplite is dispatched for costly work
+    statement: probe with psiloi when the target location is unknown; skip it when you already know where to act
 
   - id: shield_wall
-    statement: on failure, retry at the narrowest scope once, then escalate up — never retry the same scope twice
+    statement: on failure, retry at the narrowest scope once; if an escalation model is configured, retry once more on that model; then escalate up — never retry the same scope twice on the same model
 
   - id: consult_the_oracle
     statement: if the objective is ambiguous, or a shield_wall escalation reaches the strategos with nothing new to try, stop and ask the user — do not re-dispatch
 
   - id: single_state
-    statement: no agent holds private state; all reads and writes go through agora
+    statement: no agent holds private state; all reads and writes go through agora — request only the keys a task needs, not the whole store
 
   - id: concise_output
     statement: user-facing output is extremely concise — no preamble, no narration, no restating the question; skip anything not essential to the answer
 
+models:
+  # optional: a stronger/pricier model for shield_wall's last retry before the
+  # oracle is consulted, e.g. "anthropic/claude-opus-4". Leave blank to skip
+  # straight to the oracle once the primary model's retries are exhausted.
+  escalation: ""
+
 extend:
-  add_lochos:
-    append_to: roles.lochagos.instances
-    template:
-      id: <domain_name>
-      reports_to: strategos
-      dispatches: [hoplites]
-
-  add_hoplite:
-    append_to: roles.hoplites   # tag with its owning lochagos
-    template:
-      id: <skill_name>
-      reports_to: <lochagos_id>
-      tool: <single_tool_reference>
-    constraint: exactly one tool per hoplite; a task needing two tools becomes two hoplites
-
-  general_principle: >
-    every new role declares exactly one reports_to and inherits its tier's
-    rules above. adding a new tier requires updating the rules section too.
+  general_principle: extending the phalanx means editing this file (add a lochagos instance, write a matching .pi/agents/lochagos-<domain>.md) and updating the README — there is no auto-extend command

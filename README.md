@@ -11,9 +11,9 @@ The military-themed subagent architecture built for [Pi](https://pi.dev).
 
 | Rule | Meaning |
 |------|---------|
-| `chain_of_command` | A hoplite escalates to its lochagos, never sideways |
-| `scout_first` | Probe with psiloi before committing costly work |
-| `shield_wall` | Retry once at narrowest scope, then escalate |
+| `chain_of_command` | A lochagos escalates to the strategos, never sideways |
+| `scout_first` | Probe with psiloi when the target is unknown; skip it when already known |
+| `shield_wall` | Retry once at narrowest scope, once more on an escalation model if configured, then escalate |
 | `consult_the_oracle` | If ambiguous or retries exhausted, ask the oracle |
 | `single_state` | No private state; all reads/writes go through agora |
 | `concise_output` | Extremely concise output — no preamble or narration |
@@ -34,10 +34,9 @@ Each skill file teaches the agent how to handle a specific job:
 
 | Skill | When to use |
 |-------|------------|
-| `phalanx-strategos` | Coordinating a multi-step task across multiple domains |
-| `phalanx-psiloi` | Fast codebase reconnaissance before committing a specialist |
-| `phalanx-lochagos` | Substantial multi-step work in one domain |
-| `phalanx-hoplites` | Small, well-scoped task needing exactly one tool |
+| `phalanx-strategos` | Coordinating a multi-step task, deciding when to act directly vs. dispatch |
+| `phalanx-psiloi` | Fast codebase reconnaissance when the target location is unknown |
+| `phalanx-lochagos` | Work too large for the strategos to act on directly — one generalist pass or a large multi-domain split |
 | `phalanx-agora` | Sharing state across dispatches via the memory bus |
 | `phalanx-oracle` | Escalating to the user when stuck or ambiguous |
 
@@ -52,8 +51,7 @@ ares/
 ├── phalanx-architecture.yaml        # Roles, tiers, rules, extend templates
 ├── .pi/
 │   ├── agent/AGENTS.md              # 🆕 Strategos system prompt (overrides global)
-│   ├── agents/                      # Subagent system prompts (psiloi, lochagos-*) 
-│   (no direct-report hoplites; add roles by editing phalanx-architecture.yaml)
+│   ├── agents/                      # Subagent system prompts (psiloi, lochagos-*)
 │   ├── extensions/phalanx/          # Extension source code (TypeScript)
 │   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
 │   └── phalanx/agora.json           # Runtime shared memory (gitignored)
