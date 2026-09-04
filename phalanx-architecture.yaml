@@ -9,7 +9,7 @@ roles:
     reports_to: null
     dispatches: [lochagos, psiloi]
     interfaces: [chat, note]     # user-facing surfaces; both follow rule concise_output
-    responsibility: sets the objective and owns final decisions; acts directly on small or single-file work, and dispatches a lochagos only for large, multi-file, risky, or genuinely parallel work
+    responsibility: plans the objective, dispatches lochagos/psiloi to carry out the work, and reports outcomes and decisions back — acts directly only for trivial one-step lookups
 
   psiloi:
     tier: scout

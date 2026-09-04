@@ -1,6 +1,6 @@
 ---
 name: phalanx-lochagos
-description: Dispatch a lochagos coordinator — lochagos-work for a self-contained small/medium objective, or lochagos-research/build/verify to split a large multi-file effort across dedicated passes. Use for work that's too large or risky for the strategos to act on directly.
+description: Dispatch a lochagos coordinator — lochagos-work for a self-contained small/medium objective, or lochagos-research/build/verify to split a large multi-file effort across dedicated passes. The strategos plans and reports; this is how it gets work done.
 ---
 
 # Lochagos (coordinator)
@@ -17,8 +17,8 @@ A **lochagos** coordinates one domain in an isolated context, working directly
 
 ## When to dispatch
 
-- The objective is too large, risky, or multi-file for the strategos to act on
-  directly.
+- The strategos is a planner and reporter — it dispatches a lochagos for
+  virtually all real work, and only acts directly for trivial one-step lookups.
 - **Small/medium, self-contained** — dispatch `lochagos-work` alone.
 - **Large, multi-file effort** — split across `lochagos-research` →
   `lochagos-build` → `lochagos-verify` as separate passes.

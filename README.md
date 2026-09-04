@@ -34,9 +34,9 @@ Each skill file teaches the agent how to handle a specific job:
 
 | Skill | When to use |
 |-------|------------|
-| `phalanx-strategos` | Coordinating a multi-step task, deciding when to act directly vs. dispatch |
+| `phalanx-strategos` | Planning an objective and reporting outcomes — the strategos's default mode |
 | `phalanx-psiloi` | Fast codebase reconnaissance when the target location is unknown |
-| `phalanx-lochagos` | Work too large for the strategos to act on directly — one generalist pass or a large multi-domain split |
+| `phalanx-lochagos` | Getting work done — one generalist pass or a large multi-domain split |
 | `phalanx-agora` | Sharing state across dispatches via the memory bus |
 | `phalanx-oracle` | Escalating to the user when stuck or ambiguous |
 

@@ -115,7 +115,7 @@ function buildRulesFragment(arch: PhalanxArchitecture): string {
 function buildRosterFragment(arch: PhalanxArchitecture, agents: AgentConfig[]): string {
   const lines = ["# Phalanx roster (dispatchable roles)", ""];
   lines.push(
-    "- act directly for small or single-file work — dispatch only for large, multi-file, risky, or genuinely parallel work",
+    "- dispatch, don't do — you are a planner and reporter; delegate via phalanx_dispatch. Only act directly for trivial one-step lookups (a single read, a one-line fact)",
   );
   lines.push("- psiloi (scout): fast, cheap recon when the target location is unknown (scout_first)");
   for (const inst of arch.roles.lochagos?.instances ?? []) {
@@ -237,11 +237,11 @@ export default function (pi: ExtensionAPI) {
     description:
       "Dispatch a phalanx role to execute one task in an isolated context. " +
       "Roles: psiloi (scout), lochagos-<domain> (coordinator: work/research/build/verify). " +
-      "Use for large, multi-file, risky, or genuinely parallel work — act directly otherwise. " +
+      "The strategos is a planner and reporter — dispatch this for anything beyond a trivial one-step lookup. " +
       "Enforces chain_of_command, shield_wall (retry once, then an escalation model if configured, then escalate), and consult_the_oracle.",
-    promptSnippet: "Dispatch a phalanx role (psiloi, lochagos-<domain>) for work too large or risky to do directly",
+    promptSnippet: "Dispatch a phalanx role (psiloi, lochagos-<domain>) to do the work — you plan and report, you don't do",
     promptGuidelines: [
-      "Act directly for small/single-file work; reserve phalanx_dispatch for large, multi-file, risky, or parallel work. " +
+      "Dispatch, don't do: delegate via phalanx_dispatch instead of acting directly. Only act directly for trivial one-step lookups. " +
         "Scout with psiloi first only when the target location is unknown (scout_first). Never dispatch sideways (chain_of_command).",
     ],
     parameters: Type.Object({

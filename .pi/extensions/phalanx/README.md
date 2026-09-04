@@ -39,8 +39,9 @@ covers every Pi session; the project one adds the specific roster for `ares`.
 | `lochagos-verify` | coordinator | read, grep, bash | verify a domain (large-effort split) |
 
 
-The main session **is** the strategos. It acts directly by default and dispatches
-down only for large, risky, or genuinely parallel work, owning final decisions.
+The main session **is** the strategos. It is a planner and reporter: it
+dispatches down for the work and owns final decisions, acting directly only
+for trivial one-step lookups.
 
 ## Chain of command
 
