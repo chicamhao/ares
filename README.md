@@ -4,14 +4,6 @@
 
 The military-themed subagent architecture built for [Pi](https://pi.dev).
 
-## Use in your own project
-
-1. **Copy `.pi/`** into your project root
-2. **Create `CONVENTIONS.yaml`** (project root) — code style, git conventions (see this repo's copy as a template)
-3. **Set up `phalanx-architecture.yaml`** — define roles, rules, deployment scope
-4. **Start a Pi session** — the strategos loads automatically from `.pi/agent/AGENTS.md`
-5. **Dispatch work** — use `/phalanx-muster` for status, describe the objective, and the phalanx handles the rest
-
 <img width="1402" height="1122" alt="image" src="https://github.com/user-attachments/assets/967b7081-c0ce-4fc2-8b31-a9d36276d807" />
 
 
@@ -53,6 +45,13 @@ The **strategos** (the main session) loads these skill files as needed and
 applies their instructions. You never install or enable skills — they are just
 markdown files that describe how to use the extension's tools.
 
+## Use in your own project
+
+0. (Optional) **update `phalanx-architecture.yaml`** — to define new custom roles, rules, deployment scope
+1. **Copy `.pi/`** into your project root
+2. **Create `CONVENTIONS.yaml`** in your project root — code style (see this repo's copy as a template)
+3. **Start a Pi session** — the strategos loads automatically and the phalanx handles the rest
+
 ## File layout
 
 ```
@@ -64,5 +63,4 @@ markdown files that describe how to use the extension's tools.
 │   ├── extensions/phalanx/          # Extension source code (TypeScript)
 │   ├── skills/phalanx-*/SKILL.md    # Skill instructions (loaded on demand)
 │   └── phalanx/agora.json           # Runtime shared memory (gitignored)
-└── Scripts/                         # Your game/project code
 ```
